@@ -53,5 +53,17 @@ class mongodb::install (
       require => $mongodb_10gen_package_require,
       before  => [Anchor['mongodb::install::end']]
     }
+    package { 'mongodb-package-server':
+      ensure  => $package_ensure,
+      name    => "${mongodb_package_name}-server",
+      require => $mongodb_10gen_package_require,
+      before  => [Anchor['mongodb::install::end']]
+    }
+    package { 'mongodb-package-shell':
+      ensure  => $package_ensure,
+      name    => "${mongodb_package_name}-shell",
+      require => $mongodb_10gen_package_require,
+      before  => [Anchor['mongodb::install::end']]
+    }
 
 }
