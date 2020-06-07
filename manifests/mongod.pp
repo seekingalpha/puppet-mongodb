@@ -23,7 +23,7 @@ define mongodb::mongod (
   $mongod_deactivate_transparent_hugepage = false,
 ) {
 
-  $db_specific_dir = "${::mongodb::params::dbdir}/mongod_${mongod_instance}"
+  $db_specific_dir = "${::mongodb::dbdir}/mongod_${mongod_instance}"
   $osfamily_lc = downcase($::osfamily)
 
   if $mongod_restart_on_change {
@@ -53,13 +53,13 @@ define mongodb::mongod (
   file {
     $db_specific_dir:
       ensure  => directory,
-      owner   => $::mongodb::params::run_as_user,
-      group   => $::mongodb::params::run_as_group,
+      owner   => $::mongodb::run_as_user,
+      group   => $::mongodb::run_as_group,
       notify  => $notify,
       require => Class['mongodb::install'],
   }
 
-  if $mongodb::params::systemd_os {
+  if $mongodb::systemd_os {
     $service_provider = 'systemd'
     file {
       "/etc/init.d/mongod_${mongod_instance}":
@@ -115,7 +115,7 @@ define mongodb::mongod (
     file { "/etc/mongod_${mongod_instance}.key":
       content => template('mongodb/mongod.key.erb'),
       mode    => '0700',
-      owner   => $mongodb::params::run_as_user,
+      owner   => $mongodb::run_as_user,
       require => Class['mongodb::install'],
       notify  => Service["mongod_${mongod_instance}"],
     }
